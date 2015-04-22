@@ -11,12 +11,12 @@ Use the mask provided by osiris = yes
 #####################################################################
 # Text file containing the name of all images to be processed
 #####################################################################
-List of images = /development/iris_qa/osiris_current_img.txt
+List of images = /home/jollyjackson/Desktop/iris_qa/osiris_current_img.txt
 
 #####################################################################
 # INPUTS : load the input datas from which directories ?
 #####################################################################
-Load original images = /development/iris_img_db/
+Load original images = /home/jollyjackson/Desktop/image_db/iris_img_db/
 #Load parameters = 
 #Load masks = 
 #Load normalized images = 
@@ -27,13 +27,13 @@ Load original images = /development/iris_img_db/
 #####################################################################
 # OUTPUTS : save the results in which directories ?
 #####################################################################
-Save segmented images 		= /development/iris_qa/imgdb_processed/
-Save contours parameters	= /development/iris_qa/imgdb_processed/
-Save masks of iris 				= /development/iris_qa/imgdb_processed/
-Save normalized images 		= /development/iris_qa/imgdb_processed/
-Save normalized masks 		= /development/iris_qa/imgdb_processed/ 
-#Save iris codes 					= /development/iris_qa/imgdb_processed/ 
-#Save matching scores 		 = /development/iris_qa/imgdb_processed/
+Save segmented images 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
+Save contours parameters	= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
+Save masks of iris 				= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
+Save normalized images 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
+Save normalized masks 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
+#Save iris codes 					= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
+#Save matching scores 		 = /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 
 #####################################################################
 # PROCESSING PARAMETERS
@@ -45,8 +45,8 @@ Maximum diameter for iris 	= 350
 Width of normalized image 	= 512
 Height of normalized image	= 64
 
-Gabor filters 			= /development/iris_qa/osiris_4_1/OsirisParam/filters.txt
-Application points 	= /development/iris_qa/osiris_4_1/OsirisParam/points.txt
+Gabor filters 			= /home/jollyjackson/Desktop/iris_qa/osiris_4_1/OsirisParam/filters.txt
+Application points 	= /home/jollyjackson/Desktop/iris_qa/osiris_4_1/OsirisParam/points.txt
 
 #####################################################################
 # FILE SUFFIX
