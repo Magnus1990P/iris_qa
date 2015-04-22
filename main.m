@@ -2,7 +2,7 @@
 OS_SIZE = 4;
 RED=[255, 0, 0];                     %Grab the red color
 WHT=[255];                           %Dictate white color
-short_list;                          %IMPORT image database
+osiris_short_list;                   %IMPORT image database
 
 
 for i = 1:1:1%size(  dbOrg, 1 )
@@ -10,7 +10,7 @@ for i = 1:1:1%size(  dbOrg, 1 )
   imgMrg    = imread( dbOsiris( ( (i-1)*OS_SIZE)+4, : ) );
   imgMsk    = imread( dbOsiris( ( (i-1)*OS_SIZE)+3, : ) );
 
-  %[pxTotal, pxNoise, pxSignal, pxPupil] = area(imgMrg, imgMsk);
+  %[pxTotal, pxNoise, pxSignal, pxPupil] = area(imgMrg, imgMsk);f
   
   Ac = pxSignal;
   Ap = ( pxPupil / pxTotal ) * 100;
@@ -19,4 +19,3 @@ for i = 1:1:1%size(  dbOrg, 1 )
   %focus( imgOrg, imgMsk );
   
 end
-
