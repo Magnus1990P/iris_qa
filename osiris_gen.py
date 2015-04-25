@@ -17,6 +17,8 @@ regExp 	= {'ERROR':re.compile("Error|error|ERROR|SIGKILL"),
 
 fileListName	= sys.argv[1]
 configType		= "SMALL"
+imageCounter	= 0
+imageFails		= 0
 
 processedFile = open( "./osiris.proc.list", "a" )
 currentImage	= open( "osiris_current_img.txt", "r+" )
@@ -25,11 +27,12 @@ currentImage.truncate( )
 imageList = open( fileListName, "r" )
 print "Converting images in list: " + fileListName
 for image in imageList.readlines( ):
+	imageCounter	= imageCounter + 1
 	image = image.rstrip( "\n\0\r\t" )[len(orgImgPath):]
 	currentImage.seek(  0 )
 	currentImage.write( image )
 	
-	print str( image ) + " - " + str( configType ),
+	print str(imageCounter) + "\t" + str( image ) + " - " + str( configType ),
 	
 	configNumber	= 0
 	osirisResult	= "SUCCESS!"
@@ -57,6 +60,9 @@ for image in imageList.readlines( ):
 			osirisResult = "FAILED"
 			
 		configNumber = configNumber + 1
+		
+	if osirisResult == "FAILED":
+		imageFails = imageFails + 1
 
 	processedFile.write(	str( image ) 			+ ";" + 
 												str( configType ) + ";" + 
@@ -65,7 +71,20 @@ for image in imageList.readlines( ):
 	
 	currentImage.truncate( )
 	print "- " + osirisResult
+	
+	if imageCounter % 10 == 0:
+		print
+		print
+		print "STATUS: " + str(imageCounter-imageFails) + "/" + str(imageCounter)
+		print
+		print
+	
 
 currentImage.close(  )
 processedFile.close( )
 
+print
+print
+print "STATUS: " + str(imageCounter - imageFails)  + "/" +  str(imageCounter)
+print
+print

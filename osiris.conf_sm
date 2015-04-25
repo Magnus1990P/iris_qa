@@ -16,12 +16,12 @@ List of images = /home/jollyjackson/Desktop/iris_qa/osiris_current_img.txt
 #####################################################################
 # INPUTS : load the input datas from which directories ?
 #####################################################################
-Load original images = /home/jollyjackson/Desktop/image_db/iris_img_db/
-#Load parameters = 
-#Load masks = 
-#Load normalized images = 
-#Load normalized masks = 
-#Load iris codes = 
+Load original images 		= /home/jollyjackson/Desktop/image_db/iris_img_db/
+#Load parameters 				 = 
+#Load masks 						 = 
+#Load normalized images  = 
+#Load normalized masks 	 = 
+#Load iris codes 				 = 
 
 
 #####################################################################
@@ -32,16 +32,16 @@ Save contours parameters	= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 Save masks of iris 				= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 Save normalized images 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 Save normalized masks 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
-#Save iris codes 					= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
+#Save iris codes 			 		 = /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
 #Save matching scores 		 = /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 
 #####################################################################
 # PROCESSING PARAMETERS
 #####################################################################
 Minimum diameter for pupil	= 20
-Maximum diameter for pupil 	= 100
+Maximum diameter for pupil 	= 70
 Minimum diameter for iris 	= 100
-Maximum diameter for iris 	= 350
+Maximum diameter for iris 	= 300
 Width of normalized image 	= 512
 Height of normalized image	= 64
 
@@ -57,4 +57,3 @@ Suffix for masks of iris 			= _mask.bmp
 Suffix for normalized images 	= _imno.bmp
 Suffix for normalized masks 	= _mano.bmp
 Suffix for iris codes 				= _code.bmp
-

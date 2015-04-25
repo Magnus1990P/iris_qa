@@ -16,32 +16,28 @@ List of images = /home/jollyjackson/Desktop/iris_qa/osiris_current_img.txt
 #####################################################################
 # INPUTS : load the input datas from which directories ?
 #####################################################################
-Load original images = /home/jollyjackson/Desktop/image_db/iris_img_db/
-#Load parameters = 
-#Load masks = 
-#Load normalized images = 
-#Load normalized masks = 
-#Load iris codes = 
+Load original images 		 = /home/jollyjackson/Desktop/image_db/iris_img_db/
+#Load parameters 				 = 
+#Load masks 						 = 
+#Load normalized images  = 
+#Load normalized masks 	 = 
+#Load iris codes 				 = 
 
 
 #####################################################################
 # OUTPUTS : save the results in which directories ?
 #####################################################################
-Save segmented images 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
-Save contours parameters	= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
-Save masks of iris 				= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
-Save normalized images 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
-Save normalized masks 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
+Save segmented images 		= /home/jollyjacksonff_qa/imgdb_processed/ 
 #Save iris codes 					= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/ 
 #Save matching scores 		 = /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 
 #####################################################################
 # PROCESSING PARAMETERS
 #####################################################################
-Minimum diameter for pupil	= 20
-Maximum diameter for pupil 	= 140
-Minimum diameter for iris 	= 125
-Maximum diameter for iris 	= 800
+Minimum diameter for pupil	= 100
+Maximum diameter for pupil 	= 300
+Minimum diameter for iris 	= 400
+Maximum diameter for iris 	= 1000
 Width of normalized image 	= 512
 Height of normalized image	= 64
 
@@ -57,4 +53,3 @@ Suffix for masks of iris 			= _mask.bmp
 Suffix for normalized images 	= _imno.bmp
 Suffix for normalized masks 	= _mano.bmp
 Suffix for iris codes 				= _code.bmp
-
