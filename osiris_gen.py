@@ -42,14 +42,14 @@ for image in imageList.readlines( ):
 		osirisResult = "SUCCESS"
 		
 		if configNumber == 0:
-			configType	= "SMALL"
-			cmd 				= ["./osiris", scriptPath + "osiris.conf_sm"]
+			configType	= "LARGE"
+			cmd 				= ["./osiris", scriptPath + "osiris.conf_lg"]
 		elif configNumber == 1:
 			configType	= "NORMAL"
 			cmd 				= ["./osiris", scriptPath + "osiris.conf"]
 		elif configNumber == 2:
-			configType	= "LARGE"
-			cmd 				= ["./osiris", scriptPath + "osiris.conf_lg"]
+			configType	= "SMALL"
+			cmd 				= ["./osiris", scriptPath + "osiris.conf_sm"]
 
 		try:
 			osirisOutput = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
