@@ -40,8 +40,8 @@ Save normalized masks 		= /home/jollyjackson/Desktop/iris_qa/imgdb_processed/
 #####################################################################
 Minimum diameter for pupil	= 100
 Maximum diameter for pupil 	= 300
-Minimum diameter for iris 	= 400
-Maximum diameter for iris 	= 1000
+Minimum diameter for iris 	= 300
+Maximum diameter for iris 	= 900
 Width of normalized image 	= 512
 Height of normalized image	= 64
 

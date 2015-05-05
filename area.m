@@ -1,5 +1,4 @@
 function [total, noise, signal, pupil] = area(imgNoise, imgSignal)
-
   RED = [255,0,0];
   WHT = [255];
 
@@ -20,11 +19,8 @@ function [total, noise, signal, pupil] = area(imgNoise, imgSignal)
   start = 0;
   pupil = 0;
   for i=1:1:size(imTot,1)
-      
     if nnz( imTot( i, :) ) > 1
-      
       for j=1:1:size(imTot,2)
-        
         if start==0      &&  imTot(i,j) == 1
           start = 1;
         elseif start==1  &&  imTot(i,j) == 0
@@ -33,17 +29,14 @@ function [total, noise, signal, pupil] = area(imgNoise, imgSignal)
         elseif start==2  &&  imTot(i,j) == 1
           start = 0;
         end
-        
       end
-      
     end
-    
   end
   
-  imshow( imgSignal )
-  imshow( nsMask )
-  %imshow( imTot )
+  %figure, imshow( imgSignal ),  title('SIGNAL')
+  %figure, imshow( nsMask ),     title('MASK')
+  %figure, imshow( imTot ),      title('TOTAL (SIGNAM + MASK)')
   
-  clear imTot nsMask imgSignal RED WHT imgNoise
+  clear imTot nsMask imgSignal RED WHT imgNoise;
   
 end
