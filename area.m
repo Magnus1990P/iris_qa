@@ -1,42 +1,50 @@
-function [total, noise, signal, pupil] = area(imgNoise, imgSignal)
-  RED = [255,0,0];
-  WHT = [255];
-
-  nsMask    = true(size(imgNoise,1), size(imgNoise,2)); %Noise img
+function [totIris, irisNoise, irisSignal, Pupil, Total] = area(imgNoise, imgSignal)
+  RED   = [255,0,0];
+  WHT   = [255];
+  CTRL  = 0;
+    
+    %Generate background images of X,Y size
+  nsMask = true(  size(imgNoise,1), size(imgNoise,2) ); %Noisy pixels
+  imPup  = false( size(imgNoise,1), size(imgNoise,2) ); %Pupil pixels
+  imTot  = false( size(imgNoise,1), size(imgNoise,2) ); %Total iris area pixels
+  
+    %Generate noise mask by binarising the RED areas of the image to 1
   for i=1:3
-    nsMask  = and(nsMask, imgNoise(:,:,i)==RED(i) );    %Bin noise img
+    nsMask = and(nsMask, imgNoise(:,:,i)==RED(i) );    %Bin noise img
   end;
   
-  imTot  = false( size(imgNoise,1), ...    %Total area
-                  size(imgNoise,2));
-  imTot  = or( nsMask,           ...       %Total area of iris - pupil
-               imgSignal(:,:,1)==WHT );
+    %Total area of the iris, except the pupil
+    %OR the noise and signal img
+  imTot  = or(    nsMask, imgSignal(:,:,1)==WHT );
   
-  total  = nnz( imTot     );
-  noise  = nnz( nsMask    );
-  signal = nnz( imgSignal );
-  
-  start = 0;
-  pupil = 0;
+        %Calulate area of the pupil
   for i=1:1:size(imTot,1)
     if nnz( imTot( i, :) ) > 1
       for j=1:1:size(imTot,2)
-        if start==0      &&  imTot(i,j) == 1
-          start = 1;
-        elseif start==1  &&  imTot(i,j) == 0
-          pupil = pupil + 1;
-          start = 2;
-        elseif start==2  &&  imTot(i,j) == 1
-          start = 0;
+        if CTRL==0     &&  imTot(i,j) == 1
+          CTRL = 1;
+        elseif CTRL>=1 && imTot(i,j) == 0 && nnz(imTot(i,j:size(imTot,2))) ~= 0
+          imPup(i,j) = WHT;
+          CTRL = 2;
+        elseif CTRL==2 && nnz(imTot(i,j:size(imTot,2))) >= 0
+          CTRL = 0;
         end
       end
+      CTRL = 0;
     end
   end
   
-  %figure, imshow( imgSignal ),  title('SIGNAL')
-  %figure, imshow( nsMask ),     title('MASK')
-  %figure, imshow( imTot ),      title('TOTAL (SIGNAM + MASK)')
+%  figure; imshow( imTotal );    title( 'IRIS + PUPIL' );
+%  figure; imshow( imPup );      title( 'PUPIL AREA' );
+%  figure; imshow( imTot );      title( 'IRIS AREA' );
+%  figure; imshow( nsMask );     title( 'NOISY IRIS AREA' );
+%  figure; imshow( imgSignal );  title( 'NOISE FREE IRIS AREA'  );
+
+  totIris    = imTot;     %%Tot num of pixels in the iris, W/O the pupil
+  irisNoise  = nsMask;    %%Num of iris pixels considered noise
+  irisSignal = imgSignal; %%Num of iris pixels considered noise-free
+  Pupil      = imPup;     %%Num of pupil pixels
+  Total      = or( totIris, Pupil );     %%Absolute max num of pixels
   
-  clear imTot nsMask imgSignal RED WHT imgNoise;
-  
+  clear imgNoise RED WHT CTRL start
 end
