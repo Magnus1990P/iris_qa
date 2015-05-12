@@ -1,4 +1,4 @@
-function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter )
+function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   param     =  imgParameter;
   count     =  1;
   minAngle  = -1;
@@ -44,7 +44,7 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter )
     %Calculate the angle of the vector in degrees
     Angle     = atan2d(   DY,   DX );
     %Rotate and measure values of the convex hull
-    [M, W, H] = rotateBox( COOR, Angle );
+    [M, W, H] = rotateBox( COOR, Angle, COOR( 1, 1:2) );
     
     %If minArea,  update
     if P_AREA == -1 || P_AREA > M

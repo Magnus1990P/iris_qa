@@ -1,5 +1,5 @@
 
-function [M, W, H] = rotateBox( iB, A )
+function [M, W, H] = rotateBox( iB, A, COOR )
   if A == 0 || A == 90
     X = max(iB(:,1)) - min(iB(:,1));
     Y = max(iB(:,2)) - min(iB(:,2));

@@ -22,7 +22,9 @@ for fileIndex = 4:1:4%size(hq_img,1)
   imgSignal = imread( fileNames(2,:) );
   
   [tIris, nIris, sIris, tPupil, tAll] = area( imgNoise, imgSignal );
-  [Ia, It, I_AREA, Pa, Pt, P_AREA] = borderBox( fileNames(3,:) );
+  clear imgNoise imgSignal  %CLEAN UP ENVIRONMENT, a copy is returned by area()
+  
+  [Ia, It, I_AREA, Pa, Pt, P_AREA] = borderBox( fileNames(3,:), orgName );
   
 %  figure; imshow( tAll   );  title( 'IRIS + PUPIL' );
 %  figure; imshow( tPupil );  title( 'PUPIL AREA' );
@@ -30,11 +32,14 @@ for fileIndex = 4:1:4%size(hq_img,1)
 %  figure; imshow( nIris  );  title( 'NOISY IRIS AREA' );
 %  figure; imshow( sIris  );  title( 'NOISE FREE IRIS AREA'  );
 
-  Ao = nnz( nIris ) / nnz( tIris   );
-  Ac = nnz( sIris   );
-  Aa = Ia;
-  Ta = It;
-  Ap = P_AREA / I_AREA;
+  Ao = nnz( nIris ) / nnz( tIris   );   %Occlusion assessment
+  Ac = nnz( sIris   );                  %Iris Area assessment
+  Aa = Ia;                              %Off-angle assessment
+  Ta = It;                              %Off-angle assessment
+  Ap = P_AREA / I_AREA;                 %Pupil dialation assessment
+  Af = focus(orgName, sIris);  %Focus assessment
+  Am = -1;  %Motion assessment
+  Ab = -1;  %Iris pigmentation assessment
   
   clear fileNames skelName orgName fileName imgNoise imgSignal
   clear Ia It I_AREA Pa Pt P_AREA totIris irisNoise irisSignal Pupil Total
