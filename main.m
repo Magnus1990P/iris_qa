@@ -1,11 +1,10 @@
-
 OS_SIZE = 4;                    %
 RED=[255, 0, 0];                %Grab the red color
 WHT=[255];                      %Dictate white color
+AVG_FOCUS = 1;                  %MUST BE LOADED PRIOR TO INITIATING
 image_database;                 %Image database
 dbBasePath = '../iris_img_db/'; %Path to original images
 dbSavePath = 'imgdb_processed/';%Path to where the osiris has stored photos
-
 extension = [ '_segm.bmp'; ...  %Extensions to stored images
               '_mask.bmp'; ...  %
               '_para.txt';];    %
@@ -26,20 +25,14 @@ for fileIndex = 4:1:4%size(hq_img,1)
   
   [Ia, It, I_AREA, Pa, Pt, P_AREA] = borderBox( fileNames(3,:), orgName );
   
-%  figure; imshow( tAll   );  title( 'IRIS + PUPIL' );
-%  figure; imshow( tPupil );  title( 'PUPIL AREA' );
-%  figure; imshow( tIris  );  title( 'IRIS AREA' );
-%  figure; imshow( nIris  );  title( 'NOISY IRIS AREA' );
-%  figure; imshow( sIris  );  title( 'NOISE FREE IRIS AREA'  );
-
   Ao = nnz( nIris ) / nnz( tIris   );   %Occlusion assessment
   Ac = nnz( sIris   );                  %Iris Area assessment
   Aa = Ia;                              %Off-angle assessment
   Ta = It;                              %Off-angle assessment
   Ap = P_AREA / I_AREA;                 %Pupil dialation assessment
-  Af = focus(orgName, sIris);  %Focus assessment
-  Am = -1;  %Motion assessment
-  Ab = -1;  %Iris pigmentation assessment
+  Af = focus(orgName, sIris)/AVG_FOCUS; %Focus assessment
+  Am = -1;                              %Motion assessment
+  Ab = -1;                              %Iris pigmentation assessment
   
   clear fileNames skelName orgName fileName imgNoise imgSignal
   clear Ia It I_AREA Pa Pt P_AREA totIris irisNoise irisSignal Pupil Total
