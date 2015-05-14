@@ -10,9 +10,12 @@ if len( sys.argv ) != 2:
 	exit()
 
 scriptPath = "/home/jollyjackson/Desktop/iris_qa/"
-orgImgPath = "/home/jollyjackson/Desktop/image_db/iris_img_db/"
+orgImgPath = "/home/jollyjackson/Development/iris_img_db/"
 
-regExp 	= {'ERROR':re.compile("Error|error|ERROR|SIGKILL"),
+scriptPath = "/development/iris_qa/"
+orgImgPath = "/development/iris_img_db/"
+
+regExp 	= {'ERROR':re.compile("Error|error|ERROR|SIGKILL|cannot|Cannot|Can not|can not"),
 					 'WARNING':re.compile("Warning|warning|WARNING")}
 
 fileListName	= sys.argv[1]
@@ -21,35 +24,33 @@ imageCounter	= 0
 imageFails		= 0
 
 processedFile = open( "./osiris.proc.list", "a" )
-currentImage	= open( "osiris_current_img.txt", "r+" )
+currentImage	= open( "./osiris_current_img.txt", "r+" )
 currentImage.truncate( )
 
 imageList = open( fileListName, "r" )
 print "Converting images in list: " + fileListName
+
 for image in imageList.readlines( ):
 	imageCounter	= imageCounter + 1
 	image = image.rstrip( "\n\0\r\t" )[len(orgImgPath):]
 	currentImage.seek(  0 )
 	currentImage.write( image )
 	
-	print str(imageCounter) + "\t" + str( image ) + " - " + str( configType ),
-	
 	configNumber	= 0
-	osirisResult	= "SUCCESS!"
+	osirisResult	= ""
 	ERROR					= ""
 	
 	while configNumber < 3 and osirisResult != "SUCCESS":
 		osirisResult = "SUCCESS"
-		
 		if configNumber == 0:
-			configType	= "LARGE"
-			cmd 				= ["./osiris", scriptPath + "osiris.conf_lg"]
-		elif configNumber == 1:
 			configType	= "NORMAL"
-			cmd 				= ["./osiris", scriptPath + "osiris.conf"]
-		elif configNumber == 2:
+			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf"]
+		elif configNumber == 1:
 			configType	= "SMALL"
-			cmd 				= ["./osiris", scriptPath + "osiris.conf_sm"]
+			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf_sm"]
+		elif configNumber == 2:
+			configType	= "LARGE"
+			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf_lg"]
 
 		try:
 			osirisOutput = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
@@ -58,28 +59,21 @@ for image in imageList.readlines( ):
 					osirisResult = "FAILED"
 		except subprocess.CalledProcessError as e:
 			osirisResult = "FAILED"
-			
-		configNumber = configNumber + 1
+		
+		configNumber = configNumber + 1; 
+
 		
 	if osirisResult == "FAILED":
 		imageFails = imageFails + 1
-
-	processedFile.write(	str( image ) 			+ ";" + 
+	processedFile.write	(	str( image ) 			+ ";" + 
 												str( configType ) + ";" + 
 												str( osirisResult + "\n" )
 											)
-	
 	currentImage.truncate( )
-	print "- " + osirisResult
-	
-	if imageCounter % 10 == 0:
-		print
-		print
-		print "STATUS: " + str(imageCounter-imageFails) + "/" + str(imageCounter)
-		print
-		print
-	
+	print str(imageCounter) + "\t" + str(image) + " - " + str(configNumber) + "/" + str(configType) + " - " + osirisResult
 
+
+######### LOOP STOPPED ########
 currentImage.close(  )
 processedFile.close( )
 
@@ -88,3 +82,4 @@ print
 print "STATUS: " + str(imageCounter - imageFails)  + "/" +  str(imageCounter)
 print
 print
+

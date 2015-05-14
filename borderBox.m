@@ -12,31 +12,28 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   IW        =  0;
   IH        =  0;
   
-  parameterData   = importdata( param );
-  Ph              = parameterData(1);
-  Ih              = parameterData(2);
-  irisBorder      = zeros(Ih, 3);
-  pupilBorder     = zeros(Ph, 3);
+  pD        = importdata( param );  %Import osirisdata -> 1 column matrix
+  Ph        = pD(1);                %Number of datapoints for pupil
+  pB        = zeros(Ph, 3);         %Matrix to hold border coordinates
+  Ih        = pD(2);                %Number of datapoints for iris
+  iB        = zeros(Ih, 3);         %Matrix to hold border coordinates
   
   
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%   Calculate minimum bounding rectangle of pupile  %%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
-  
-  
-  %%%%%%%%%%%%%%%%%%
-  %   Calculate minimum bounding rectangle of pupil
-  
-  %
   %Generate pupil border matrix
   for I = 3:3:(3*Ph)
-    pupilBorder(count,:) = [parameterData(I:I+2)];
+    pB(count,:) = [pD(I:I+2)];  
     count = count + 1;
   end
   
   minAngle  = -1;
   %Get convex hull
-  pupilHull = convhull(pupilBorder(:,1), pupilBorder(:,2) );
+  pupilHull = convhull(pB(:,1), pB(:,2) );
   %Grab coordinate values of the points in the convex hull
-  COOR      = pupilBorder( pupilHull, 1:2);
+  COOR      = pB( pupilHull, 1:2);
   
   for I=1:1:size(COOR,1)  
     %Calculate delta of current edge
@@ -48,10 +45,10 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
     
     %If minArea,  update
     if P_AREA == -1 || P_AREA > M
-      minAngle = Angle;
-      P_AREA  = M;
-      PW      = W;
-      PH      = H;
+      minAngle  = Angle;
+      P_AREA    = M;
+      PW        = W;
+      PH        = H;
       
       %Set dM and dm
       if W > H
@@ -82,22 +79,24 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   
   
   
-  %%%%%%%%%%%%%%%%%%
-  %   Calculate minimum bounding rectangle of iris
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%   Calculate minimum bounding rectangle of iris    %%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
   %Reset values
   minAngle  = -1;
   count     =  1;
   
   %Generate pupil border matrix
   for I = 3*Ph+3:3:(3*Ph)+(3*Ih)
-    irisBorder(count,:) = [ parameterData(I:I+2) ];
+    iB(count,:) = [ pD(I:I+2) ];
     count = count + 1;
   end
   
   %Get convex hull
-  irisHull = convhull(irisBorder(:,1), irisBorder(:,2) );
+  irisHull = convhull(iB(:,1), iB(:,2) );
   %Grab coordinate values of the points in the convex hull
-  COOR     = irisBorder( irisHull, 1:2);
+  COOR     = iB( irisHull, 1:2);
   for I=1:1:size(COOR,1)
     %Calculate delta of current edge
     [DX, DY]  = getDelta( COOR, I  );
