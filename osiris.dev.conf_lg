@@ -41,7 +41,7 @@ Save normalized masks 		= /development/iris_qa/imgdb_processed/
 Minimum diameter for pupil	= 70
 Maximum diameter for pupil 	= 200
 Minimum diameter for iris 	= 300
-Maximum diameter for iris 	= 500
+Maximum diameter for iris 	= 600
 Width of normalized image 	= 512
 Height of normalized image	= 64
 

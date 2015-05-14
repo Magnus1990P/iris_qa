@@ -15,7 +15,7 @@ orgImgPath = "/home/jollyjackson/Development/iris_img_db/"
 scriptPath = "/development/iris_qa/"
 orgImgPath = "/development/iris_img_db/"
 
-regExp 	= {'ERROR':re.compile("Error|error|ERROR|SIGKILL|cannot|Cannot|Can not|can not"),
+regExp 	= {'ERROR':re.compile("Segmentation|Error|error|ERROR|SIGKILL|cannot|Cannot|Can not|can not"),
 					 'WARNING':re.compile("Warning|warning|WARNING")}
 
 fileListName	= sys.argv[1]
