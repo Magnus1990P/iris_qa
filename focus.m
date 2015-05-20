@@ -1,4 +1,4 @@
-function [focus] = focus(IMGORG, SIRIS)
+function [focus, focus2] = focus(IMGORG, SIRIS)
   BLK     = [0,0,0];
   focus   = -1;
   img     = rgb2gray( imread( IMGORG ) );
@@ -39,7 +39,8 @@ function [focus] = focus(IMGORG, SIRIS)
   FS    = abs( fftshift( F(:) ) );  %Absolute value of the shifted fourier
   FS    = FS .^ 2;                  %Shifted fourier squared
   
+  focus2= sum( FS );                %Total sum of it
   focus = sum( FS ) / 10^10;        %Summize the values into a single value
                                     % scale the value down by e+10, usual value
-                                    % is around e+12
+                                    % is around e+12, much more manageable value
 return 

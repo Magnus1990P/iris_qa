@@ -4,6 +4,7 @@
 import sys
 import subprocess
 import re
+import os.path
 
 if len( sys.argv ) != 2:
 	print "Incorrect amount of parameters, eg. ./osiris_gen.py img_list_hq_orig.txt"
@@ -15,7 +16,8 @@ orgImgPath = "/home/jollyjackson/Development/iris_img_db/"
 scriptPath = "/development/iris_qa/"
 orgImgPath = "/development/iris_img_db/"
 
-regExp 	= {'ERROR':re.compile("Segmentation|Error|error|ERROR|SIGKILL|cannot|Cannot|Can not|can not"),
+regExp 	= {'ERROR':re.compile("Segmentation|fault|Error|error|ERROR|SIGKILL|" +
+															"cannot|Cannot"),
 					 'WARNING':re.compile("Warning|warning|WARNING")}
 
 fileListName	= sys.argv[1]
@@ -30,48 +32,47 @@ currentImage.truncate( )
 imageList = open( fileListName, "r" )
 print "Converting images in list: " + fileListName
 
+## Loop through the image list
 for image in imageList.readlines( ):
+	osirisOutput 	= ""
+	configNumber	= 0
 	imageCounter	= imageCounter + 1
-	image = image.rstrip( "\n\0\r\t" )[len(orgImgPath):]
+	image 				= image.rstrip( "\n\0\r\t" )[len(orgImgPath):]
+	storedImage 	= "imgdb_processed/"+str(image[image.rfind("/")+1 : image.rfind(".")]) + "_para.txt"
 	currentImage.seek(  0 )
 	currentImage.write( image )
-	
-	configNumber	= 0
-	osirisResult	= ""
-	ERROR					= ""
-	
-	while configNumber < 3 and osirisResult != "SUCCESS":
-		osirisResult = "SUCCESS"
+
+	osirisResult	= "FAIL"
+	while configNumber < 3 and osirisResult == "FAIL":
 		if configNumber == 0:
-			configType	= "NORMAL"
 			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf"]
 		elif configNumber == 1:
-			configType	= "SMALL"
 			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf_sm"]
 		elif configNumber == 2:
-			configType	= "LARGE"
 			cmd 				= ["./osiris", scriptPath + "osiris.dev.conf_lg"]
 
 		try:
 			osirisOutput = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-			for line in osirisOutput.split("\n"):
-				if regExp['ERROR'].search( line ) is not None:
-					osirisResult = "FAILED"
 		except subprocess.CalledProcessError as e:
-			osirisResult = "FAILED"
+			osirisResult	= "FAIL"
 		
+		if regExp['ERROR'].search( osirisOutput ) is None:
+			osirisResult = "SUCCESS"
+
 		configNumber = configNumber + 1; 
+	#LOOP END
 
-		
-	if osirisResult == "FAILED":
+	#Count fails
+	if osirisResult == "FAIL":
 		imageFails = imageFails + 1
-	processedFile.write	(	str( image ) 			+ ";" + 
-												str( configType ) + ";" + 
-												str( osirisResult + "\n" )
-											)
-	currentImage.truncate( )
-	print str(imageCounter) + "\t" + str(image) + " - " + str(configNumber) + "/" + str(configType) + " - " + osirisResult
 
+	#Write result to file
+	processedFile.write( str( image ) + "\n" )
+	currentImage.truncate( )
+	#print str(imageCounter) + "\t" + str(image) + " - " + str(configNumber) + "/" + str(configType) + " - " + osirisResult
+	
+	if imageCounter % 20 == 0:
+		print "Fails: " + str(imageFails) + "/" + str(imageCounter)
 
 ######### LOOP STOPPED ########
 currentImage.close(  )
