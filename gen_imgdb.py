@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #-*- coding: utf8 -*-
+#Generates the image database file for lq and hq images
 import os.path
 import sys
 

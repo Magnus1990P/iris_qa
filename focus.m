@@ -18,7 +18,6 @@ function [focus, focus2] = focus(IMGORG, SIRIS)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%  CREATE HIGHPASS IMAGE   %%
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
   %Code gathered from: http://www.cs.uregina.ca/Links/class-info/425/Lab5/
   %Lab 5 - section 3.2
   %GENERATE FILTER LOW and Highpass gaussian filter
