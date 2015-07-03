@@ -83,7 +83,7 @@ for j=1:1:2           %For all image databases
     Aa = Ia;                                        %Off-angle assessment
     Ta = It;                                        %Off-angle assessment
     Ap = P_AREA / I_AREA;                           %Pupil dialation assessment
-    Af = FOCUS(count, 3);                           %Focus assessment
+    Af = focus(count, 3);                           %Focus assessment
     
     Am = -1;                                        %Motion assessment
     Ab = -1;                                        %Iris pigmentation assessment
