@@ -2,9 +2,10 @@ function collective_focus_average( hq, lq, bp, sp )
   wStart      = 0;                  %Start of filenames
   avg_focus   = 0;                  %average focus
   count       = 0;                  %Counter for number of images to divide by
-  focusList   = zeros( size(hq,1)+size(lq,1), 3);
+  focusList   = zeros( size(hq,1) + size(lq,1), 3);
   
   for j=1:1:2         %For each database HQ and LQ
+    
     if j==1           %Start with HQ
       db = hq;
       wStart = 12;    %offset to start of filename
@@ -17,6 +18,7 @@ function collective_focus_average( hq, lq, bp, sp )
     %% Calculate the focus value of each image
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for fileIndex = 1:1:size(db,1)              %For entries in database
+        count     = count + 1;                  %increment counter
         fn  = db( fileIndex, : );               %grab filename
         on  = strcat( bp, fn );                 %prepend base path
         sn  = strcat( sp, fn( wStart:end-4 ) ); %get filename
@@ -24,8 +26,8 @@ function collective_focus_average( hq, lq, bp, sp )
 
         imgSignal = imread( fn );               %Load the irisMask
         [f, f2]   = focus(on, imgSignal);       %Perform focus assessment
+        [f, f2]
         focusList(count, 1:2) = [f, f2];        %append to the list
-        count     = count + 1;                  %increment counter
         
         clear fn sn on imgSignal f f2;          %Clear up the memory
     end                                         %End of files in database

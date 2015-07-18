@@ -11,20 +11,22 @@ wStart      = 0;                  %
 FOCUS       = 0;                  %
 count       = 0;                  %
 
+RESULT      = zeros(1, 10);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Try to load the focus assessment or generate 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-try
-  FOCUS = load( 'focusList.mat' );  %If exist it is loaded
-catch ERR                           %IF it doesn't exist create and load it
-  collective_focus_average(hq_img, lq_img, dbBasePath, dbSavePath);
-  FOCUS = load( 'focusList.mat' ); 
-end
+ try
+   FOCUS = load( 'focusList.mat' );  %If exist it is loaded
+ catch ERR                           %IF it doesn't exist create and load it
+   collective_focus_average(hq_img, lq_img, dbBasePath, dbSavePath);
+   FOCUS = load( 'focusList.mat' ); 
+ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load databases of images
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for j=1:1:2           %For all image databases
+for j=1:1:1           %For all image databases
   if j==1             %Set and select HQ database
     db = hq_img;      
     wStart = 12;      %Offset
@@ -36,7 +38,7 @@ for j=1:1:2           %For all image databases
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% Retrieve assessment data for images
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  for fileIndex = 1:1:OS_SIZE %size(db,1) %For all in current set
+  for fileIndex = 1:1:size(db,1) %For all in current set
     count = count + 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,6 +68,10 @@ for j=1:1:2           %For all image databases
     [ tIris, nIris, sIris, tPupil, tAll] = area( imgNoise, imgSignal ); 
     clear imgNoise imgSignal                              %clean up mem
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Calculate the motion blur assessment
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    [Am, Amt]       = motion( tAll, sIris, orgName );
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Calculate the angular offset assessment and area
@@ -85,16 +91,17 @@ for j=1:1:2           %For all image databases
     Ap = P_AREA / I_AREA;                           %Pupil dialation assessment
     Af = focus(count, 3);                           %Focus assessment
     
-    Am = -1;                                        %Motion assessment
     Ab = -1;                                        %Iris pigmentation assessment
 
-    
+    RESULT(count,:) = [j, Ac, Aa, Ta, Af, Am, Amt, Ab, Ap];
+    RESULT(count,:)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Clean up the environment
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     clear fileNames skelName orgName fileName imgNoise imgSignal
     clear Ia It I_AREA Pa Pt P_AREA totIris irisNoise irisSignal Pupil Total
+    
   end
 end
 
