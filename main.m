@@ -2,13 +2,15 @@ OS_SIZE = 4;                      %
 RED=[255, 0, 0];                  %Grab the red color
 WHT=[255];                        %Dictate white color
 image_database_new;               %Image database
-dbBasePath  = '../iris_img_db/';  %Path to original images
+%dbBasePath  = '../iris_img_db/';  %Path to original images on laptop
+                                  %Path to original images on server
+dbBasePath  = '/home/jollyjackson/Desktop/image_db/iris_img_db/';
 dbSavePath  = 'imgdb_processed/'; %Path to where the osiris has stored photos
 extension   = [ '_segm.bmp'; ...  %Extensions to stored images
                 '_mask.bmp'; ...  %
                 '_para.txt';];    %
 wStart      = 0;                  %
-FOCUS       = 0;                  %
+FOCUSLIST   = 0;                  %
 count       = 0;                  %
 
 RESULT      = zeros(1, 10);
@@ -17,10 +19,10 @@ RESULT      = zeros(1, 10);
 %% Try to load the focus assessment or generate 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  try
-   FOCUS = load( 'focusList.mat' );  %If exist it is loaded
+   FOCUSLIST = load( 'focusList.mat' );  %If exist it is loaded
  catch ERR                           %IF it doesn't exist create and load it
    collective_focus_average(hq_img, lq_img, dbBasePath, dbSavePath);
-   FOCUS = load( 'focusList.mat' ); 
+   FOCUSLIST = load( 'focusList.mat' ); 
  end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,9 +32,11 @@ for j=1:1:1           %For all image databases
   if j==1             %Set and select HQ database
     db = hq_img;      
     wStart = 12;      %Offset
+    'HQ Image Database'
   else                %Set and select LQ database
     db = lq_img;      
     wStart = 53;      %Offset
+    'LQ Image Database'
   end
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,7 +93,7 @@ for j=1:1:1           %For all image databases
     Aa = Ia;                                        %Off-angle assessment
     Ta = It;                                        %Off-angle assessment
     Ap = P_AREA / I_AREA;                           %Pupil dialation assessment
-    Af = focus(count, 3);                           %Focus assessment
+    Af = FOCUSLIST(count, 3);                       %Focus assessment
     
     Ab = -1;                                        %Iris pigmentation assessment
 
@@ -103,6 +107,12 @@ for j=1:1:1           %For all image databases
     clear Ia It I_AREA Pa Pt P_AREA totIris irisNoise irisSignal Pupil Total
     
   end
+  'Done with image database'
 end
+'FINISHED PROCESSING'
+'SAVING RESULT MATRIX TO FILE'
+save results.mat RESULT;                 %Save matrix to file results.mat
 
 clear RED extension fileIndex hq_img lq_img OS_SIZE WHT
+'Done saving, exiting'
+

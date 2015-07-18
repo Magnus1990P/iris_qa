@@ -4,14 +4,18 @@ function collective_focus_average( hq, lq, bp, sp )
   count       = 0;                  %Counter for number of images to divide by
   focusList   = zeros( size(hq,1) + size(lq,1), 3);
   
+  'STARTING FOCUS ASSESSMENT'
+  
   for j=1:1:2         %For each database HQ and LQ
     
     if j==1           %Start with HQ
       db = hq;
       wStart = 12;    %offset to start of filename
+      'HQ Image Database'
     else              %End with LQ
       db = lq;
       wStart = 53;    %Offset to start of filename
+      'LQ Image Database'
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,11 +30,11 @@ function collective_focus_average( hq, lq, bp, sp )
 
         imgSignal = imread( fn );               %Load the irisMask
         [f, f2]   = focus(on, imgSignal);       %Perform focus assessment
-        [f, f2]
         focusList(count, 1:2) = [f, f2];        %append to the list
         
         clear fn sn on imgSignal f f2;          %Clear up the memory
     end                                         %End of files in database
+    'FINISHED DATABASE'
   end                                           %End of database selection
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,4 +45,5 @@ function collective_focus_average( hq, lq, bp, sp )
   save focusList.mat focusList;                 %Save matrix to file
   
   clear hq lq bp sp count                       %clear up the memory
+  'FINISHED FOCUS ASSESSMENT'
 return
