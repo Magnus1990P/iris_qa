@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%		
+%%		SVM Classification program
+%%    pokemon( RESULT(1:52,:), RESULT(53:size(RESULT,1),:), [4,5,6,7,8,9,11] )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function ans = pokemon( good, bad, fields )
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,7 +17,7 @@ function ans = pokemon( good, bad, fields )
     k   			= gSize;									%Amount to use for training
 		
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%		
+    %%		Initialize datasets for use with SVM classifier
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     data = [ good_data; bad_data];					%Concatenate good & bad
     label( 				 1 : gSize, 1 )	= 'G';  	%Label good images
@@ -71,7 +72,7 @@ function ans = pokemon( good, bad, fields )
     end
     
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%		
+    %%		Generate results to be returned
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     y = sum( test  );
     ans = [	min(    ret ),            ... %Worst case
