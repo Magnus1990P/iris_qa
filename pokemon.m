@@ -79,7 +79,7 @@ function ans = pokemon( good, bad, fields )
             max(    ret ),            ... %Best case
             median( ret ),            ... %center value
             mode(   ret ),            ... %most common value
-            mean(   ret );            ... %average value
+            mean(   ret ),            ... %average value
             min(    ret ) * 100 / y,  ... %Worst prop class. as good
         	 	max(    ret ) * 100 / y,  ... %Best prop class. as good
   	        median( ret ) * 100 / y,  ... %Center classified as good
