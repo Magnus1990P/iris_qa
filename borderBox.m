@@ -1,3 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Feature for main.m
+%%	This calculates the min bounding box and angle of the pupil and iris
+%%
+%%	Author:				Magnus Øverbø
+%%	Copyright:		Magnus Øverbø
+%%	Supervisor:		Kiran Bylappa Raja NISlab
+%%	Date:					XXXX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   param     =  imgParameter;
   count     =  1;
@@ -19,45 +28,38 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   iB        = zeros(Ih, 3);         %Matrix to hold border coordinates
   
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %%   Calculate minimum bounding rectangle of pupile  %%
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
-  %Generate pupil border matrix
-  for I = 3:3:(3*Ph)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%   Calculate minimum bounding rectangle of pupile
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  for I = 3:3:(3*Ph)														%Generate pupil border matrix
     pB(count,:) = [pD(I:I+2)];  
     count = count + 1;
   end
   
   minAngle  = -1;
-  %Get convex hull
-  pupilHull = convhull(pB(:,1), pB(:,2) );
-  %Grab coordinate values of the points in the convex hull
-  COOR      = pB( pupilHull, 1:2);
+  pupilHull = convhull(pB(:,1), pB(:,2) );			%Get convex hull
+  COOR      = pB( pupilHull, 1:2);							%Grab coordinate values of the 
+																								%	points in the convex hull
   
-  for I=1:1:size(COOR,1)  
-    %Calculate delta of current edge
-    [DX, DY]  = getDelta( COOR, I  );
-    %Calculate the angle of the vector in degrees
-    Angle     = atan2d(   DY,   DX );
-    %Rotate and measure values of the convex hull
-    [M, W, H] = rotateBox( COOR, Angle, COOR( 1, 1:2) );
+  for I=1:1:size(COOR,1)  											%For all coordinates
+    [DX, DY]  = getDelta( COOR, I  );					  %Calculate delta of current edge
+    Angle     = atan2d(   DY,   DX );				  	%Calculate vector angle degrees
+    [M, W, H] = rotateBox(COOR, Angle, 			...	%Rotate and measure values of 
+													COOR( 1, 1:2) );			%	the convex hull
     
-    %If minArea,  update
-    if P_AREA == -1 || P_AREA > M
-      minAngle  = Angle;
-      P_AREA    = M;
-      PW        = W;
-      PH        = H;
-      
-      %Set dM and dm
-      if W > H
-        dM=W; dm=H;
-      else
-        dM=H; dm=W;
-      end
-    end
-  end
+    if P_AREA == -1 || P_AREA > M								%If minArea,  update
+      minAngle  = Angle;												%
+      P_AREA    = M;														%
+      PW        = W;														%
+      PH        = H;														%
+     														% 
+      if W > H																	%Set dM and dm
+        dM=W; dm=H;															%
+      else																			%
+        dM=H; dm=W;															%
+      end																				%
+    end																					%End of 
+  end																						%End coordinate loop
   
   %Calculate angled rectangle
   RE(2,:) = [ (cosd(minAngle)*PW),            sind(minAngle)*PW ];
@@ -79,10 +81,9 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   
   
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %%   Calculate minimum bounding rectangle of iris    %%
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%   Calculate minimum bounding rectangle of iris    
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %Reset values
   minAngle  = -1;
   count     =  1;
