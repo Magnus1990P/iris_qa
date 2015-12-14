@@ -1,25 +1,32 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Feature for main.m
 %%	This calculates the min bounding box and angle of the pupil and iris
+%%		IAa					Alpha angle of iris bounding box
+%%		ITa					Theta rotation of iris bounding box
+%%		I_AREA			Size of min bounding box of iris
+%%		PAa					Alpha angle of pupil bounding box
+%%		PTa					Theta angle of pupil bounding box
+%%		P_AREA			Size of min bounding box of pupil
 %%
 %%	Author:				Magnus Øverbø
 %%	Copyright:		Magnus Øverbø
 %%	Supervisor:		Kiran Bylappa Raja NISlab
-%%	Date:					XXXX
+%%	Last rev:			
+%%	Comment:			
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
-  param     =  imgParameter;
-  count     =  1;
-  minAngle  = -1;
-  RE        =  zeros(5,2);
-  dM        =  0;
-  dm        =  0;
-  P_AREA    = -1;
-  PW        =  0;
-  PH        =  0;
-  I_AREA    = -1;
-  IW        =  0;
-  IH        =  0;
+  param     =  imgParameter;				%Param file from OSIRIS
+  count     =  1;										%Counter variable
+  minAngle  = -1;										%minimum Angle
+  RE        =  zeros(5,2);					%Results
+  dM        =  0;										%
+  dm        =  0;										%
+  P_AREA    = -1;										%Pupil area
+  PW        =  0;										%Pupil width
+  PH        =  0;										%Pupil height
+  I_AREA    = -1;										%Iris area
+  IW        =  0;										%Iris width
+  IH        =  0;										%Iris height
   
   pD        = importdata( param );  %Import osirisdata -> 1 column matrix
   Ph        = pD(1);                %Number of datapoints for pupil
@@ -40,7 +47,7 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   pupilHull = convhull(pB(:,1), pB(:,2) );			%Get convex hull
   COOR      = pB( pupilHull, 1:2);							%Grab coordinate values of the 
 																								%	points in the convex hull
-  
+
   for I=1:1:size(COOR,1)  											%For all coordinates
     [DX, DY]  = getDelta( COOR, I  );					  %Calculate delta of current edge
     Angle     = atan2d(   DY,   DX );				  	%Calculate vector angle degrees
@@ -52,7 +59,7 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
       P_AREA    = M;														%
       PW        = W;														%
       PH        = H;														%
-     														% 
+
       if W > H																	%Set dM and dm
         dM=W; dm=H;															%
       else																			%
@@ -70,11 +77,18 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   %alpha angle and Theta rotation
   PAa = (1-(dm/dM));
   if RE(2,2) <= 0
-    PTa = tand( atan2d( (RE(2,2)/dM), (RE(2,1)/dM) )  );
+    tPTa = atan2d( (RE(2,2)/dM), (RE(2,1)/dM) );
   else
-    PTa = tand( atan2d( ((0-RE(2,2))/dM), ((0-RE(2,1))/dM) ) );
+    tPTa = atan2d( ((0-RE(2,2))/dM), ((0-RE(2,1))/dM) );
   end
   
+	if tPTa == 90					%Fixed value for 90, equates to 89.9999...
+		PTa = 10000000;
+	elseif tPTa == -90
+		PTa = -10000000;
+	else
+		PTa = tand(tPTa);
+	end
   
   
   
@@ -129,11 +143,20 @@ function [IAa, ITa, I_AREA, PAa, PTa, P_AREA] = borderBox( imgParameter, org )
   
   %alpha angle and Theta rotation
   IAa = (1-(dm/dM));
+
   if RE(2,2) <= 0
-    ITa = tand( atan2d( (RE(2,2)/dM), (RE(2,1)/dM) )  );
+    tITA = atan2d( (RE(2,2)/dM), (RE(2,1)/dM) );
   else
-    ITa = tand( atan2d( ((0-RE(2,2))/dM), ((0-RE(2,1))/dM) ) );
+    tITA = atan2d( ((0-RE(2,2))/dM), ((0-RE(2,1))/dM) );
   end
-  
+
+	if tITA == 90					%Fixed value for 90, equates to 89.9999.....
+		ITa = 10000000;
+	elseif tITA == -90
+		ITa = -10000000;
+	else
+		ITa = tand(tITA);
+	end
+
 return
   

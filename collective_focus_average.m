@@ -1,49 +1,83 @@
-function collective_focus_average( hq, lq, bp, sp )
-  wStart      = 0;                  %Start of filenames
-  avg_focus   = 0;                  %average focus
-  count       = 0;                  %Counter for number of images to divide by
-  focusList   = zeros( size(hq,1) + size(lq,1), 3);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%	Calculate the Collective average of the image database focus
+%%		The result is outputted to the "focusList.mat" file which contains 
+%%			the assessed focus for each image in the databse.
+%%
+%%	Author:				Magnus Øverbø
+%%	Copyright:		Magnus Øverbø
+%%	Supervisor:		Kiran Bylappa Raja NISlab
+%%	Last rev:			
+%%	Comment:			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function collective_focus_average( num_dbs )
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%	FILENAME VARIABLES
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	NUMDB				= num_dbs;															%number of databases
+	count				= 0; 																		%counter
+  avg_focus   = 0;        									          %average focus
+	pathSkip		= [42,44,45];														%Const pathskip for paths
+	endSkip			= [4,4,5];															%Extension skip
+	dbBasePath  = '/development/dbIris/db_periocular/';	
+	dbSavePath  = '/development/dbIris/img_processed/';
+	extension   = [ '_segm.bmp'; 		...
+	                '_mask.bmp'; 		...
+	                '_para.txt';];
+  focusList   = zeros(0,2);														%Focus of each image
+	imgDB;																							%Load imgDB.m
   
-  'STARTING FOCUS ASSESSMENT'
-  
-  for j=1:1:2         %For each database HQ and LQ
-    
-    if j==1           %Start with HQ
-      db = hq;
-      wStart = 12;    %offset to start of filename
-      'HQ Image Database'
-    else              %End with LQ
-      db = lq;
-      wStart = 53;    %Offset to start of filename
-      'LQ Image Database'
-    end
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% Load databases of images
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  disp('STARTING FOCUS ASSESSMENT');
+	for j=1:1:NUMDB															%Go through databases
+  	if j==1       												     %Set and select HQ database
+  	  db = imgList_1;    											%High Quality Image Set
+	    disp('GUC database');
+		elseif j==2																%Set and select LQ database
+  	  db = imgList_2;      										%Low Quality Image Set
+	    disp('Miche databse');									%
+		elseif j==3
+  	  db = imgList_3;      										%Low Quality Image Set
+	    disp('UBIRIS databse');									%
+		end																				%end database load
+		
+		SKIP	= pathSkip(j);											%Set std var to req skip
+		EXT		= endSkip(j);												%Set std var to req skip
+  
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Calculate the focus value of each image
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    for fileIndex = 1:1:size(db,1)              %For entries in database
-        count     = count + 1;                  %increment counter
-        fn  = db( fileIndex, : );               %grab filename
-        on  = strcat( bp, fn );                 %prepend base path
-        sn  = strcat( sp, fn( wStart:end-4 ) ); %get filename
-        fn  = strcat( sn, '_mask.bmp' );        %append fileending
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    for fileIndex = 1:1:size(db,1)            		%For entries in database
+      count		= count + 1;               					%increment counter
+      fname 	= db( fileIndex, : );               %grab filename
+     	mask		= strcat( dbSavePath, 							...
+												fname( SKIP:end-EXT ),		...
+												extension(2,:) 	); 				%get filename
 
-        imgSignal = imread( fn );               %Load the irisMask
-        [f, f2]   = focus(on, imgSignal);       %Perform focus assessment
-        focusList(count, 1:2) = [f, f2];        %append to the list
-        
-        clear fn sn on imgSignal f f2;          %Clear up the memory
-    end                                         %End of files in database
-    'FINISHED DATABASE'
-  end                                           %End of database selection
+      f   			= focus(fname, mask);			  		  %Perform focus assessment
+      focusList = [focusList; f, 0];     	  			%append to the list
+
+			disp( fname );															%Display info
+      clear fname mask f;
+    end                                       		%End of files in database
+    disp('FINISHED DATABASE');
+		clear	db;																			%
+  end                                         		%End of database selection
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% Calculate average and relative focuses
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  avg_focus = sum( focusList(:,1) ) / count;    %Calculate the focus score
-  focusList(:,3) = focusList(:,1) ./ avg_focus; %Calculate focus assessment file
-  save focusList.mat focusList;                 %Save matrix to file
-  
-  clear hq lq bp sp count                       %clear up the memory
-  'FINISHED FOCUS ASSESSMENT'
-return
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  avg_focus 			= mean( focusList(:,1) );				%Calc the focus score
+	focusList(:,2)	= focusList(:,1) ./ avg_focus;	%Calc focus assessment
+  save focusList.mat focusList;                 	%Save matrix to file
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% CLEAR UP MEMORY
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  clear avg_focus, focusList;                     %clear up the memory
+  disp('FINISHED FOCUS ASSESSMENT');
+
+end

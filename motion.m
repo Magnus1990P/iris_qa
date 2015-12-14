@@ -1,9 +1,22 @@
-function [A, T, R] = motion ( all, sig, org  )
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%	Feature for main.m
+%%		Calculates angle and magnitude of the motion blur
+%%
+%%		A:					Amplitude of focus
+%%		T:					Angle of motion blur in degrees
+%%
+%%	Author:				Magnus Øverbø
+%%	Copyright:		Magnus Øverbø
+%%	Supervisor:		Kiran Bylappa Raja, NISlab
+%%	Last rev:			
+%%	Comment:			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [A, T] = motion ( all, sig, org  )
   iOrg = rgb2gray( imread( org ) );
-  focus=zeros(91,2);
+  focus= zeros(91,2);
   
-  count=0;
-  for ang=0:2:180
+  count	= 0;
+  for ang=0:2:180												%Rotate 180 degrees for each 2 degrees 
     count = count + 1;
 
     rAll = imrotate( all,  ang, 'nearest', 'crop' );
@@ -24,12 +37,13 @@ function [A, T, R] = motion ( all, sig, org  )
     FS      = abs( fftshift( F(:) ) );  %Absolute value of the shifted fourier
     FS      = FS .^ 2;                  %Shifted fourier squared
     
-    focus(count, 1) = ang;
-    focus(count, 2) = sum( FS ) / 10^9;
-  end
+    focus(count, 1) = ang;							%Append the angle
+    focus(count, 2) = sum( FS );				%Calculate the focus
+  end																		%End rotation
   
-  [A, T]  = min( focus( :, 2 ) );
-  A       = max( focus( :, 2 ) ) - A;
-  T       = focus( T, 1 );
-  %R       = focus;
+  [A, T]  = min( focus( :, 2 ) );				%Grab min amplitude
+  A       = max( focus( :, 2 ) ) - A;		%Calculate amplitude
+  T       = focus( T, 1 );							%Save angle
+
+	clear focus rAll iSig iOrg;						%Clear memory
 return

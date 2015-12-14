@@ -1,14 +1,23 @@
-%Returns area(M), width(W) and height(H)
-%Parameters:  coordinates of a convexHull (iB), 
-%             the angle of which to use for rotation
-%             coordinates of where "origo" should be placed  (NOT USED)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%	Feature for main.m
+%%	Returns area(M), width(W) and height(H) of a rotated box
+%%
+%%	Author:				Magnus Øverbø
+%%	Copyright:		Magnus Øverbø
+%%	Supervisor:		Kiran Bylappa Raja, NISlab
+%%	Last rev:			
+%%	Comment:			
+%%	Parameters:		Coordinates of a convexHull (iB), 
+%%             		The angle of which to use for rotation
+%%             		Coordinates of where "origo" should be placed  (NOT USED)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [M, W, H] = rotateBox( iB, A, COOR )
   if A == 0 || A == 90
     W     = max(iB(:,1)) - min(iB(:,1));%Calculate width
     H     = max(iB(:,2)) - min(iB(:,2));%Calcualte height
     M     = W * H;                      %Calculate area
     return
-  end
+  end																		%Skip 90 and 0 degrees
 
   nB      = zeros( size(iB,1), 2 );     %Create a new matrix for the border
   nB(1,:) = [0,0];                      %Initiate origo point for coordinates
