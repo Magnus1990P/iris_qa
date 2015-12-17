@@ -1,5 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%	SVM Classification program
 %%
@@ -15,7 +13,7 @@
 %%  pokemon( RESULT(1:52,:), RESULT(53:size(RESULT,1),:), [4,5,6,7,8,9,11] )
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function ans = pokemon( good, bad, fields )
+function ans = pokemon( RES, LBL, FLDS )
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%		Variables
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -32,14 +30,11 @@ function ans = pokemon( good, bad, fields )
     %%%%%%RRRR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%		Initialize datasets for use with SVM classifier
 		%%%%RR%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    data = [ good_data; bad_data];					%Concatenate good & bad
-    label( 				 1 : gSize, 1 )	= 'G';  	%Label good images
-    label( gSize + 1 : dSize, 1 )	= 'B';  	%Label bad images
-
-    species = cellstr( label );         		%Create species
-    groups = ismember( species,	  'G'); 		%HQ are 1 and LQ are 0
-
-    cp = classperf( groups );								%
+		data	= RES(:, FLDS);							%Complete database of results from main.m
+		label	= LBL;											%Man classification from webIIC "G/B"
+    species = cellstr( label );      	%Create species
+    groups = ismember( species,	'G');	%HQ are 1 and LQ are 0
+    cp = classperf( groups );					%
   
 
 		%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,11 +47,16 @@ function ans = pokemon( good, bad, fields )
     for i=1:1:100
 			%%%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	%%		Generate data set for training
-			%%%%%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      set 	= reshape( randperm(N, k), k, 1) + gSize;	%Create X*1 matrix
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			set 	= reshape(randperm(N, k), k, 1) + gSize;	%Create X*1 matrix
       train = logical( zeros( dSize, 1 ) );						%Zero out training set
       train( 1:gSize, 1 ) = logical( 1 );							%Mark HQ for training
-      train( set, 1 ) = logical( 1 );									%Mark LQ for training
+      train( set, 1 ) 		= logical( 1 );							%Mark LQ for training
+
+			%PSEUDO
+			%set is selection of "bad" images
+			%select all from label which is U/G/B 0/1/2
+			%set this as training set with logical ones
       
 			%%%%%%%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	%%		Generate data set for testing
@@ -64,6 +64,11 @@ function ans = pokemon( good, bad, fields )
       test  = logical( zeros( dSize, 1 ) );						%Zero out testing set
       test(gSize+1:dSize, 1 ) = logical( 1 ); 				%Mark all LQ for testing
       test(  set, 1 ) = logical( 0 );							    %Remove LQ training images
+			
+			%PSEUDO
+			%create zero test set
+			%mark all images not marked for training (U or 0) as 1
+
       
 			%%%%%%%%%%%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	%%		Train the SVM classifier
@@ -84,7 +89,7 @@ function ans = pokemon( good, bad, fields )
       ret(1, i) = sum( classes );                    %Sum the classification
     end
     
-		RRRR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%		Generate results to be returned
 		%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%RR%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     y = sum( test  );
